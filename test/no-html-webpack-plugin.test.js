@@ -25,14 +25,14 @@ t.test('html-webpack-plugin', async t => {
 
         plugins: [
             new HtmlWebpackPlugin(),
-            new DynamicCdnWebpackPlugin(),
+            new DynamicCdnWebpackPlugin({}, false),
         ],
     });
 
     const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
     t.ok(indexFile.includes('src="/app.js"'));
-    t.ok(indexFile.includes('src="https://unpkg.com/react@15.6.1/dist/react.js"'));
+    t.ok(!indexFile.includes('src="https://unpkg.com/react@15.6.1/dist/react.js"'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
 

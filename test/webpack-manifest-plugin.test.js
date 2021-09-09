@@ -16,24 +16,24 @@ t.test('webpack-manifest-plugin', async t => {
 
         output: {
             publicPath: '',
-            path: path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin')
+            path: path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'),
         },
 
         entry: {
-            app: './single.js'
+            app: './single.js',
         },
 
         plugins: [
             new WebpackManifestPlugin({fileName: 'manifest.json'}),
-            new DynamicCdnWebpackPlugin()
-        ]
+            new DynamicCdnWebpackPlugin(),
+        ],
     });
 
     const manifest = JSON.parse(await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/manifest.json')));
 
     t.same(manifest, {
         'app.js': 'app.js',
-        'react.js': 'https://unpkg.com/react@15.6.1/dist/react.js'
+        'react.js': 'https://unpkg.com/react@15.6.1/dist/react.js',
     });
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/app.js'));
