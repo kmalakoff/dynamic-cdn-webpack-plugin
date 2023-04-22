@@ -225,6 +225,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://twitter.com/mjackson"><img src="https://avatars0.githubusercontent.com/u/92839?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MICHAEL JACKSON</b></sub></a><br /><a href="https://github.com/unpkg/unpkg-demos" title="Examples">💡</a></td>
     <td align="center"><a href="http://blog.fedeoo.cn/"><img src="https://avatars2.githubusercontent.com/u/5313455?v=4?s=100" width="100px;" alt=""/><br /><sub><b>fedeoo</b></sub></a><br /><a href="https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21" title="Code">💻</a></td>
     <td align="center"><a href="http://effortlessmotion.com/"><img src="https://avatars.githubusercontent.com/u/756520?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kevin Malakoff</b></sub></a><br /><a href="https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=kmalakoff" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.hexmedia.pl/"><img src="https://avatars.githubusercontent.com/u/2432505?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Krystian Kuczek</b></sub></a><br /><a href="https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=kuczek" title="Code">💻</a> <a href="https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=kuczek" title="Tests">⚠️</a></td>
   </tr>
 </table>
 

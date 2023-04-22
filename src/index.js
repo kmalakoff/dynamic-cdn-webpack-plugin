@@ -2,12 +2,6 @@ const readPkgUp = require('read-pkg-up');
 const ExternalModule = require('webpack/lib/ExternalModule');
 const resolvePkg = require('resolve-pkg');
 
-let HtmlWebpackPlugin = null;
-try {
-    HtmlWebpackPlugin = require('html-webpack-plugin');
-// eslint-disable-next-line unicorn/prefer-optional-catch-binding
-} catch (_) {}
-
 const getResolver = require('./get-resolver');
 
 const pluginName = 'dynamic-cdn-webpack-plugin';
@@ -24,7 +18,7 @@ const getEnvironment = mode => {
 };
 
 module.exports = class DynamicCdnWebpackPlugin {
-    constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
+    constructor({disable = false, env, exclude, only, verbose, resolver} = {}, htmlWebpackPlugin = null) {
         if (exclude && only) throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
 
         this.disable = disable;
@@ -34,6 +28,15 @@ module.exports = class DynamicCdnWebpackPlugin {
         this.verbose = verbose === true;
         this.resolver = getResolver(resolver);
         this.modulesFromCdn = {};
+        this.htmlWebpackPlugin = htmlWebpackPlugin;
+
+        // Support for old way without passing htmlWebpackPlugin as an argument
+        if (this.htmlWebpackPlugin === null) {
+            try {
+                this.htmlWebpackPlugin = require('html-webpack-plugin');
+            // eslint-disable-next-line unicorn/prefer-optional-catch-binding
+            } catch (_) {}
+        }
     }
 
     apply(compiler) {
@@ -66,9 +69,11 @@ module.exports = class DynamicCdnWebpackPlugin {
             });
 
             // Optionally, update the HtmlWebpackPlugin assets
-            const isUsingHtmlWebpackPlugin = compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
+            const isUsingHtmlWebpackPlugin = typeof this.htmlWebpackPlugin === 'function'
+                && compiler.options.plugins.some(x => x instanceof this.htmlWebpackPlugin);
+
             if (isUsingHtmlWebpackPlugin) {
-                const hooks = HtmlWebpackPlugin.getHooks(compilation);
+                const hooks = this.htmlWebpackPlugin.getHooks(compilation);
                 hooks.beforeAssetTagGeneration.tapAsync(pluginName, (htmlPluginData, callback) => {
                     const {assets} = htmlPluginData;
                     const scripts = Object.values(this.modulesFromCdn).map(moduleFromCdn => moduleFromCdn.url);
@@ -80,8 +85,9 @@ module.exports = class DynamicCdnWebpackPlugin {
     }
 
     async addModule(contextPath, modulePath, {env}) {
-        const isModuleExcluded = this.exclude.includes(modulePath) ||
-            (this.only && !this.only.includes(modulePath));
+        const isModuleExcluded = this.exclude.includes(modulePath)
+            || (this.only && !this.only.includes(modulePath));
+
         if (isModuleExcluded) return false;
 
         const moduleName = modulePath.match(moduleRegex)[1];
@@ -105,9 +111,9 @@ module.exports = class DynamicCdnWebpackPlugin {
         }
 
         if (peerDependencies) {
-            const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
-                return this.addModule(contextPath, peerDependencyName, {env});
-            })))
+            const arePeerDependenciesLoaded = (
+                await Promise
+                    .all(Object.keys(peerDependencies).map(peerDependencyName => this.addModule(contextPath, peerDependencyName, {env}))))
                 .map(x => Boolean(x))
                 .reduce((result, x) => result && x, true);
 

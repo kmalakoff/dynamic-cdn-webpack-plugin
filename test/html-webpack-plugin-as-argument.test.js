@@ -25,7 +25,7 @@ t.test('html-webpack-plugin', async t => {
 
         plugins: [
             new HtmlWebpackPlugin(),
-            new DynamicCdnWebpackPlugin(),
+            new DynamicCdnWebpackPlugin({}, HtmlWebpackPlugin),
         ],
     });
 
